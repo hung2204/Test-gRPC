@@ -1,0 +1,5 @@
+make.exe --dry-run --always-make --keep-going --print-directory
+make: Entering directory 'g:/Gopath/src/Hung/Hung-Test/Test-gRPC'
+protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative calculator/calculator.proto
+make: Leaving directory 'g:/Gopath/src/Hung/Hung-Test/Test-gRPC'
+ 
