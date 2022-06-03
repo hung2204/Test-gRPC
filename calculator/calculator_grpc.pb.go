@@ -30,6 +30,8 @@ type CalculatorServiceClient interface {
 	Average(ctx context.Context, opts ...grpc.CallOption) (CalculatorService_AverageClient, error)
 	//Bi-Directional Streaming API: n-n
 	FindMax(ctx context.Context, opts ...grpc.CallOption) (CalculatorService_FindMaxClient, error)
+	//handle Error
+	Square(ctx context.Context, in *SquareRequest, opts ...grpc.CallOption) (*SquareResponse, error)
 }
 
 type calculatorServiceClient struct {
@@ -114,6 +116,15 @@ func (x *calculatorServiceFindMaxClient) Recv() (*FindMaxResponse, error) {
 	return m, nil
 }
 
+func (c *calculatorServiceClient) Square(ctx context.Context, in *SquareRequest, opts ...grpc.CallOption) (*SquareResponse, error) {
+	out := new(SquareResponse)
+	err := c.cc.Invoke(ctx, "/calculator.CalculatorService/Square", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CalculatorServiceServer is the server API for CalculatorService service.
 // All implementations must embed UnimplementedCalculatorServiceServer
 // for forward compatibility
@@ -126,6 +137,8 @@ type CalculatorServiceServer interface {
 	Average(CalculatorService_AverageServer) error
 	//Bi-Directional Streaming API: n-n
 	FindMax(CalculatorService_FindMaxServer) error
+	//handle Error
+	Square(context.Context, *SquareRequest) (*SquareResponse, error)
 	//mustEmbedUnimplementedCalculatorServiceServer()
 }
 
@@ -141,6 +154,9 @@ func (UnimplementedCalculatorServiceServer) Average(CalculatorService_AverageSer
 }
 func (UnimplementedCalculatorServiceServer) FindMax(CalculatorService_FindMaxServer) error {
 	return status.Errorf(codes.Unimplemented, "method FindMax not implemented")
+}
+func (UnimplementedCalculatorServiceServer) Square(context.Context, *SquareRequest) (*SquareResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Square not implemented")
 }
 func (UnimplementedCalculatorServiceServer) mustEmbedUnimplementedCalculatorServiceServer() {}
 
@@ -225,6 +241,24 @@ func (x *calculatorServiceFindMaxServer) Recv() (*FindMaxRequest, error) {
 	return m, nil
 }
 
+func _CalculatorService_Square_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SquareRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CalculatorServiceServer).Square(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/calculator.CalculatorService/Square",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CalculatorServiceServer).Square(ctx, req.(*SquareRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CalculatorService_ServiceDesc is the grpc.ServiceDesc for CalculatorService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -235,6 +269,10 @@ var CalculatorService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Sum",
 			Handler:    _CalculatorService_Sum_Handler,
+		},
+		{
+			MethodName: "Square",
+			Handler:    _CalculatorService_Square_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

@@ -38,6 +38,14 @@ message FindMaxResponse {
   int32 max = 1;
 }
 
+message SquareRequest {
+  int32 num = 1;
+}
+
+message SquareResponse {
+  double squareRoot = 1;
+}
+
 service CalculatorService {
   //Unary API: 1-1
   rpc Sum(SumRequest) returns (SumResponse) {}
@@ -47,4 +55,6 @@ service CalculatorService {
   rpc Average(stream AverageRequest) returns (AverageResponse) {}
   //Bi-Directional Streaming API: n-n
   rpc FindMax(stream FindMaxRequest) returns (stream FindMaxResponse) {}
+  //handle Error
+  rpc Square(SquareRequest) returns (SquareResponse) {}
 }

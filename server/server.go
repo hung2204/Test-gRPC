@@ -5,8 +5,11 @@ import (
 	"context"
 	"fmt"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"io"
 	"log"
+	"math"
 	"net"
 )
 
@@ -73,6 +76,19 @@ func (s *server) FindMax(stream calculator.CalculatorService_FindMaxServer) erro
 			return err
 		}
 	}
+}
+
+func (s *server) Square(ctx context.Context, req *calculator.SquareRequest) (*calculator.SquareResponse, error) {
+	fmt.Println("Square function is called")
+	num := req.GetNum()
+	if num < 0 {
+		log.Printf("req num < 0, num %v return InvalidArgument", num)
+		return nil, status.Errorf(codes.InvalidArgument, "num must be non-negative")
+	}
+	resp := &calculator.SquareResponse{
+		SquareRoot: math.Sqrt(float64(num)),
+	}
+	return resp, nil
 }
 
 func main() {

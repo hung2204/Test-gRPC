@@ -4,6 +4,8 @@ import (
 	"Hung/Hung-Test/Test-gRPC/calculator"
 	"context"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"io"
 	"log"
 	"time"
@@ -26,7 +28,8 @@ func main() {
 
 	//callSum(client, 6, 9)
 	//callAverage(client)
-	callFindMax(client)
+	//callFindMax(client)
+	callSquareRoot(client, 9)
 }
 
 func callSum(cli calculator.CalculatorServiceClient, num1, num2 int) {
@@ -135,4 +138,25 @@ func callFindMax(cli calculator.CalculatorServiceClient) {
 	}()
 
 	<-waitc
+}
+
+func callSquareRoot(cli calculator.CalculatorServiceClient, num int32) {
+	log.Printf("callSquareRoot api is called")
+	req := &calculator.SquareRequest{
+		Num: num,
+	}
+	resp, err := cli.Square(context.Background(), req)
+	if err != nil {
+		log.Printf("call square root API err %v", err)
+		// lay errStatus roi tra ve
+		if errStatus, ok := status.FromError(err); ok {
+			log.Println("err message: %v\n", errStatus.Message())
+			log.Println("err code: %v\n", errStatus.Code())
+			if errStatus.Code() == codes.InvalidArgument {
+				log.Printf("Invalid argument: %v\n", num)
+				return
+			}
+		}
+	}
+	log.Printf("square resp %v", resp.GetSquareRoot())
 }
