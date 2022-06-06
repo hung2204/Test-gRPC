@@ -3,7 +3,7 @@ syntax = "proto3";
 package calculator;
 
 //option go_package = "./";
-option go_package = "Hung/Hung-Test/Test-gRPC/calculator";
+option go_package = "Hung/Hung-Test/Test-gRPC/CallCalculator/calculator";
 
 message SumRequest {
   int32 num1 = 1;
@@ -47,14 +47,14 @@ message SquareResponse {
 }
 
 service CalculatorService {
-  //Unary API: 1-1
+  //Unary API: 1-1 tổng
   rpc Sum(SumRequest) returns (SumResponse) {}
   //Server Streaming API: 1-n
 //  rpc PrimeNumberDecomposition(PNDRequest) returns (stream PNDResponse) {}
-  //Client Streaming API: n-1
+  //Client Streaming API: n-1 trung bình cộng
   rpc Average(stream AverageRequest) returns (AverageResponse) {}
-  //Bi-Directional Streaming API: n-n
+  //Bi-Directional Streaming API: n-n tìm số lớn nhất
   rpc FindMax(stream FindMaxRequest) returns (stream FindMaxResponse) {}
-  //handle Error
+  //handle Error: căn bậc 2
   rpc Square(SquareRequest) returns (SquareResponse) {}
 }

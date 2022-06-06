@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Hung/Hung-Test/Test-gRPC/calculator"
+	calculator2 "Hung/Hung-Test/Test-gRPC/CallCalculator/calculator"
 	"context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -23,7 +23,7 @@ func main() {
 		}
 	}(cc)
 
-	client := calculator.NewCalculatorServiceClient(cc)
+	client := calculator2.NewCalculatorServiceClient(cc)
 	log.Printf("service client %v", client)
 
 	//callSum(client, 6, 9)
@@ -32,9 +32,9 @@ func main() {
 	callSquareRoot(client, 9)
 }
 
-func callSum(cli calculator.CalculatorServiceClient, num1, num2 int) {
+func callSum(cli calculator2.CalculatorServiceClient, num1, num2 int) {
 	log.Printf("callSum api is called")
-	req := &calculator.SumRequest{
+	req := &calculator2.SumRequest{
 		Num1: int32(num1),
 		Num2: int32(num2),
 	}
@@ -45,26 +45,26 @@ func callSum(cli calculator.CalculatorServiceClient, num1, num2 int) {
 	log.Printf("resp %v", resp.GetResult())
 }
 
-func callAverage(cli calculator.CalculatorServiceClient) {
+func callAverage(cli calculator2.CalculatorServiceClient) {
 	log.Printf("callAverage api is called")
 	stream, err := cli.Average(context.Background())
 	if err != nil {
 		log.Fatalf("err %v", err)
 	}
-	listReq := []calculator.AverageRequest{
-		calculator.AverageRequest{
+	listReq := []calculator2.AverageRequest{
+		calculator2.AverageRequest{
 			Num: 21.11,
 		},
-		calculator.AverageRequest{
+		calculator2.AverageRequest{
 			Num: 15.22,
 		},
-		calculator.AverageRequest{
+		calculator2.AverageRequest{
 			Num: 7.9,
 		},
-		calculator.AverageRequest{
+		calculator2.AverageRequest{
 			Num: 9.3,
 		},
-		calculator.AverageRequest{
+		calculator2.AverageRequest{
 			Num: 12.5,
 		},
 	}
@@ -82,7 +82,7 @@ func callAverage(cli calculator.CalculatorServiceClient) {
 	log.Println("resp.GetResult(): ", resp.GetResult())
 }
 
-func callFindMax(cli calculator.CalculatorServiceClient) {
+func callFindMax(cli calculator2.CalculatorServiceClient) {
 	log.Printf("callFindMax api is called")
 	stream, err := cli.FindMax(context.Background())
 	if err != nil {
@@ -93,20 +93,20 @@ func callFindMax(cli calculator.CalculatorServiceClient) {
 
 	go func() {
 		//send requests
-		listReq := []calculator.FindMaxRequest{
-			calculator.FindMaxRequest{
+		listReq := []calculator2.FindMaxRequest{
+			calculator2.FindMaxRequest{
 				Num: 2,
 			},
-			calculator.FindMaxRequest{
+			calculator2.FindMaxRequest{
 				Num: 15,
 			},
-			calculator.FindMaxRequest{
+			calculator2.FindMaxRequest{
 				Num: 7,
 			},
-			calculator.FindMaxRequest{
+			calculator2.FindMaxRequest{
 				Num: 21,
 			},
-			calculator.FindMaxRequest{
+			calculator2.FindMaxRequest{
 				Num: 12,
 			},
 		}
@@ -140,9 +140,9 @@ func callFindMax(cli calculator.CalculatorServiceClient) {
 	<-waitc
 }
 
-func callSquareRoot(cli calculator.CalculatorServiceClient, num int32) {
+func callSquareRoot(cli calculator2.CalculatorServiceClient, num int32) {
 	log.Printf("callSquareRoot api is called")
-	req := &calculator.SquareRequest{
+	req := &calculator2.SquareRequest{
 		Num: num,
 	}
 	resp, err := cli.Square(context.Background(), req)

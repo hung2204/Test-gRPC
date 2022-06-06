@@ -1,4 +1,4 @@
-module Hung/Hung-Test/Test-gRPC
+module Hung/Hung-Test/Test-gRPC/CallCalculator
 
 go 1.18
 

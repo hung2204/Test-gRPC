@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Hung/Hung-Test/Test-gRPC/calculator"
+	calculator2 "Hung/Hung-Test/Test-gRPC/CallCalculator/calculator"
 	"context"
 	"fmt"
 	"google.golang.org/grpc"
@@ -16,15 +16,15 @@ import (
 type server struct {
 }
 
-func (s *server) Sum(ctx context.Context, req *calculator.SumRequest) (*calculator.SumResponse, error) {
+func (s *server) Sum(ctx context.Context, req *calculator2.SumRequest) (*calculator2.SumResponse, error) {
 	fmt.Println("Sum function is called")
-	resp := &calculator.SumResponse{
+	resp := &calculator2.SumResponse{
 		Result: req.GetNum1() + req.GetNum2(),
 	}
 	return resp, nil
 }
 
-func (s *server) Average(stream calculator.CalculatorService_AverageServer) error {
+func (s *server) Average(stream calculator2.CalculatorService_AverageServer) error {
 	log.Println("Average function is called")
 	var total float32
 	var count int
@@ -33,7 +33,7 @@ func (s *server) Average(stream calculator.CalculatorService_AverageServer) erro
 		//client send finish request
 		if err == io.EOF {
 			//tinh trung binh cong và trả về kq cho client
-			resp := &calculator.AverageResponse{
+			resp := &calculator2.AverageResponse{
 				Result: total / float32(count),
 			}
 			return stream.SendAndClose(resp)
@@ -48,7 +48,7 @@ func (s *server) Average(stream calculator.CalculatorService_AverageServer) erro
 	}
 }
 
-func (s *server) FindMax(stream calculator.CalculatorService_FindMaxServer) error {
+func (s *server) FindMax(stream calculator2.CalculatorService_FindMaxServer) error {
 	log.Println("FindMax function is called")
 	var max int32
 	for {
@@ -67,7 +67,7 @@ func (s *server) FindMax(stream calculator.CalculatorService_FindMaxServer) erro
 		if num > max {
 			max = num
 		}
-		resp := &calculator.FindMaxResponse{
+		resp := &calculator2.FindMaxResponse{
 			Max: max,
 		}
 		err = stream.Send(resp)
@@ -78,14 +78,14 @@ func (s *server) FindMax(stream calculator.CalculatorService_FindMaxServer) erro
 	}
 }
 
-func (s *server) Square(ctx context.Context, req *calculator.SquareRequest) (*calculator.SquareResponse, error) {
+func (s *server) Square(ctx context.Context, req *calculator2.SquareRequest) (*calculator2.SquareResponse, error) {
 	fmt.Println("Square function is called")
 	num := req.GetNum()
 	if num < 0 {
 		log.Printf("req num < 0, num %v return InvalidArgument", num)
 		return nil, status.Errorf(codes.InvalidArgument, "num must be non-negative")
 	}
-	resp := &calculator.SquareResponse{
+	resp := &calculator2.SquareResponse{
 		SquareRoot: math.Sqrt(float64(num)),
 	}
 	return resp, nil
@@ -97,7 +97,7 @@ func main() {
 		log.Fatalf("err %v", err)
 	}
 	s := grpc.NewServer()
-	calculator.RegisterCalculatorServiceServer(s, &server{})
+	calculator2.RegisterCalculatorServiceServer(s, &server{})
 	fmt.Println("server is running...")
 	err = s.Serve(list)
 	if err != nil {

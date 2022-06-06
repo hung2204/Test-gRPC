@@ -22,15 +22,15 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CalculatorServiceClient interface {
-	//Unary API: 1-1
+	//Unary API: 1-1 tổng
 	Sum(ctx context.Context, in *SumRequest, opts ...grpc.CallOption) (*SumResponse, error)
 	//Server Streaming API: 1-n
 	//  rpc PrimeNumberDecomposition(PNDRequest) returns (stream PNDResponse) {}
-	//Client Streaming API: n-1
+	//Client Streaming API: n-1 trung bình cộng
 	Average(ctx context.Context, opts ...grpc.CallOption) (CalculatorService_AverageClient, error)
-	//Bi-Directional Streaming API: n-n
+	//Bi-Directional Streaming API: n-n tìm số lớn nhất
 	FindMax(ctx context.Context, opts ...grpc.CallOption) (CalculatorService_FindMaxClient, error)
-	//handle Error
+	//handle Error: căn bậc 2
 	Square(ctx context.Context, in *SquareRequest, opts ...grpc.CallOption) (*SquareResponse, error)
 }
 
@@ -129,15 +129,15 @@ func (c *calculatorServiceClient) Square(ctx context.Context, in *SquareRequest,
 // All implementations must embed UnimplementedCalculatorServiceServer
 // for forward compatibility
 type CalculatorServiceServer interface {
-	//Unary API: 1-1
+	//Unary API: 1-1 tổng
 	Sum(context.Context, *SumRequest) (*SumResponse, error)
 	//Server Streaming API: 1-n
 	//  rpc PrimeNumberDecomposition(PNDRequest) returns (stream PNDResponse) {}
-	//Client Streaming API: n-1
+	//Client Streaming API: n-1 trung bình cộng
 	Average(CalculatorService_AverageServer) error
-	//Bi-Directional Streaming API: n-n
+	//Bi-Directional Streaming API: n-n tìm số lớn nhất
 	FindMax(CalculatorService_FindMaxServer) error
-	//handle Error
+	//handle Error: căn bậc 2
 	Square(context.Context, *SquareRequest) (*SquareResponse, error)
 	//mustEmbedUnimplementedCalculatorServiceServer()
 }
